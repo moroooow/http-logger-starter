@@ -18,7 +18,7 @@ public class HttpLoggerAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "http.logging", name = "enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "http.logging", name = "enabled", havingValue = "true")
     public HttpLoggerHandler httpLoggerConfiguration() {
         return new HttpLoggerHandler(loggerProperties);
     }
