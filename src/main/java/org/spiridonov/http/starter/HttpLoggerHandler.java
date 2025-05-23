@@ -1,7 +1,6 @@
 package org.spiridonov.http.starter;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.spiridonov.http.starter.config.LoggerProperties;
@@ -10,13 +9,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
-@Component
+
 @Aspect
 public class HttpLoggerHandler {
     private static final Logger logger = LoggerFactory.getLogger(HttpLoggerHandler.class);
@@ -31,21 +27,12 @@ public class HttpLoggerHandler {
 
     @Around("@annotation(org.spiridonov.http.starter.annotations.HttpLoggable)")
     public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
-        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attrs == null) return joinPoint.proceed();
-
-        HttpServletRequest request = attrs.getRequest();
-        HttpServletResponse response = attrs.getResponse();
-
-        logger.info("HTTP REQUEST: {} {}", request.getMethod(), request.getRequestURI());
+        logger.info("HTTP REQUEST: {} {}", joinPoint.getSignature().getName(), joinPoint.getArgs());
 
         Object result;
         try {
             result = joinPoint.proceed();
-            if (response != null) {
-                int status = response.getStatus();
-                logger.debug("HTTP RESPONSE Status: {}", status);
-            }
+            logger.debug("HTTP RESPONSE BODY: {}", result);
         } catch (Throwable ex) {
             logger.error("Exception in method {}: {}", joinPoint.getSignature(), ex.getMessage(), ex);
             throw ex;

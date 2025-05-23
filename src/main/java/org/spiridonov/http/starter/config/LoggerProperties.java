@@ -1,9 +1,8 @@
 package org.spiridonov.http.starter.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+
 @ConfigurationProperties(prefix = "http.logging")
 public class LoggerProperties {
     private boolean enabled;
